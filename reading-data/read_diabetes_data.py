@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 # Read the CSV file, skipping the second row (Male/Female labels)
-df = pd.read_csv('IndiaType1/DMForecastsNew-IndiaType1.csv', skiprows=[1])
+df = pd.read_csv('DMForecastsNew-IndiaType1.csv', skiprows=[1])
 
 # Function to split the values into value, lower bound, and upper bound
 def split_values(value):
@@ -16,7 +16,7 @@ def split_values(value):
 
 # Process each age-gender column
 processed_data = pd.DataFrame()
-processed_data['Year'] = df['Prevalence-Rate-Global-Type-1']
+processed_data['Year'] = df['Prevalence-Rate']
 
 # Get unique age groups
 age_groups = ['0-5', '5-14', '15-39', '40-44', '45-49', '50-54', '55-59', 
