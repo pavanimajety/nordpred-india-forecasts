@@ -29,7 +29,6 @@ def process_file(input_csv, output_base):
     age_groups = ['0-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-34',
                   '35-39', '40-44', '45-49', '50-54', '55-59', '60-64', '65-69',
                   '70-74', '75-79', '80-84', '85+']
-    # Map age group to column name in the file
     age_map = {
         '0-4': '<5 years',
         '5-9': '5-9 Years',
@@ -48,7 +47,7 @@ def process_file(input_csv, output_base):
         '70-74': '70-74 Years',
         '75-79': '75-84 Years',
         '80-84': '75-84 Years',
-        '85+': '85+ Years',
+        '85+': '85+ years'
     }
     
     # Prepare output data
@@ -61,7 +60,7 @@ def process_file(input_csv, output_base):
         female_col = None
         if multi_header:
             for c in columns:
-                if c[0] == age_col and c[1].strip().lower().startswith('male'):
+                if c[0].lower() == age_col.lower() and c[1].strip().lower().startswith('male'):
                     male_col = c
                     break
             found_male = False
@@ -73,20 +72,20 @@ def process_file(input_csv, output_base):
                     break
             if not male_col:
                 for c in columns:
-                    if c[0] == age_col and 'male' in c[1].lower():
+                    if c[0].lower() == age_col.lower() and 'male' in c[1].lower():
                         male_col = c
                         break
             if not female_col:
                 for c in columns:
-                    if c[0] == age_col and 'female' in c[1].lower():
+                    if c[0].lower() == age_col.lower() and 'female' in c[1].lower():
                         female_col = c
                         break
         else:
             # Single header: find columns by name
             for c in columns:
-                if age_col in c and 'male' in c.lower():
+                if age_col.lower() in c.lower() and 'male' in c.lower():
                     male_col = c
-                if age_col in c and 'female' in c.lower():
+                if age_col.lower() in c.lower() and 'female' in c.lower():
                     female_col = c
         # Extract values, handling confidence intervals if present
         def extract_value(cell):
@@ -112,7 +111,6 @@ def main():
     parser.add_argument('input_csv', help='Input CSV file')
     parser.add_argument('--output-base', help='Base name for output files (without _male.txt/_female.txt)', required=False)
     args = parser.parse_args()
-    # Ask for output base if not provided
     output_base = args.output_base
     if not output_base:
         output_base = input('Enter base name for output files (e.g., processed_diabetes): ').strip()
