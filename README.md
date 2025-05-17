@@ -37,7 +37,7 @@ This project processes diabetes data from CSV files into nordpred-style output f
 
 2. **Run the script**:
    ```bash
-   python NewScripts/read_diabetes_data.py <input_csv> --output-base <output_base>
+   python reading-data/read_diabetes_data.py <input_csv> --output-base <output_base>
    ```
    - `<input_csv>`: Path to the input CSV file (e.g., `18-groups-1991-2021-input-data/Nagaland-18groups-1991-2021.csv`).
    - `<output_base>`: Base name for the output files (e.g., `NewScripts/processed-files/nagaland_processed`).
@@ -54,12 +54,12 @@ This project processes diabetes data from CSV files into nordpred-style output f
 
 To process the Nagaland data:
 ```bash
-python NewScripts/read_diabetes_data.py 18-groups-1991-2021-input-data/Nagaland-18groups-1991-2021.csv --output-base NewScripts/processed-files/nagaland_processed
+python reading-data/read_diabetes_data.py 18-groups-1991-2021-input-data/Nagaland-18groups-1991-2021.csv --output-base NewScripts/processed-files/nagaland_processed
 ```
 
 To process the Global data:
 ```bash
-python NewScripts/read_diabetes_data.py 18-groups-1991-2021-input-data/GlobalType1-18groups-1991-2021.csv --output-base NewScripts/processed-files/global_processed
+python reading-data/read_diabetes_data.py 18-groups-1991-2021-input-data/GlobalType1-18groups-1991-2021.csv --output-base NewScripts/processed-files/global_processed
 ```
 
 ## Notes
