@@ -1,3 +1,13 @@
+#!/usr/bin/env python3
+"""
+Diabetes Data Processing Script
+
+This script processes diabetes data from CSV files and generates nordpred-style output files.
+
+License: Creative Commons Attribution 4.0 International License (CC BY 4.0)
+See LICENSE file for details.
+"""
+
 import pandas as pd
 import numpy as np
 import os
