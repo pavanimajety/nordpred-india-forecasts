@@ -1,17 +1,8 @@
-#!/usr/bin/env python3
-"""
-Population Data Processing Utilities
-
-This module contains utility functions for processing, interpolating, and forecasting population data.
-
-License: Creative Commons Attribution 4.0 International License (CC BY 4.0)
-See LICENSE file for details.
-"""
-
 import pandas as pd
 import numpy as np
 from scipy.interpolate import CubicSpline
 import matplotlib.pyplot as plt
+import os
 
 def clean_column_name(col_name):
     """Clean column name by removing BOM and other special characters."""
@@ -55,7 +46,7 @@ def process_census_data(csv_files, state_name, gender):
     # Process each census year
     for csv_file in csv_files:
         # Extract year from filename
-        year = int(csv_file.split('_')[-1].split('.')[0])  # Extract year from filename
+        year = int(os.path.basename(csv_file).split('.')[0])  # Extract year from filename
         
         # Read the CSV file
         df = pd.read_csv(csv_file)
@@ -109,7 +100,7 @@ def process_census_data(csv_files, state_name, gender):
     
     return processed_data
 
-def interpolate_population(processed_data, start_year=1991, end_year=2021):
+def interpolate_population(processed_data, start_year=1990, end_year=2021):
     """
     Interpolate population data for years between census years.
     
@@ -211,8 +202,14 @@ def forecast_population(interpolated_data, forecast_years=[2025, 2030, 2035, 204
     return forecast_data
 
 def save_data(data, filename):
-    """Save data to a file."""
-    data.to_csv(filename, index=False)
+    """Save data to a file with space separator and integer values."""
+    # Make a copy to avoid modifying the original DataFrame
+    data_to_save = data.copy()
+    # Convert all columns except 'row.names' to int
+    for col in data_to_save.columns:
+        if col != 'row.names':
+            data_to_save[col] = data_to_save[col].astype(int)
+    data_to_save.to_csv(filename, index=False, sep=' ')
 
 def create_visualizations(interpolated_data, forecast_data, output_dir):
     """
@@ -286,6 +283,7 @@ def create_visualizations(interpolated_data, forecast_data, output_dir):
     plt.legend(loc='upper left', fontsize=12)
     plt.grid(True)
     
-    # Save plots
-    plt.savefig(f'{output_dir}/population_forecast.png', dpi=300)
-    plt.savefig(f'{output_dir}/population_forecast_log_scale.png', dpi=300) 
+    # Save the plot
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, 'population_forecast.png'), dpi=300, bbox_inches='tight')
+    plt.close() 

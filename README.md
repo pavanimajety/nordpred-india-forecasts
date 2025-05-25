@@ -29,12 +29,17 @@ pip install pandas numpy scipy matplotlib
      ```bash
      Rscript -e "install.packages(c('dplyr', 'ggplot2', 'tidyr'), repos='https://cran.rstudio.com/')"
      ```
+   - Copy the `nordpred.s` file to your working directory (required for nordpred analysis)
 
-## Usage
+## Disease Data Processing: Usage
+
+Note:  use `python3` in place of `python` based on your
+installed python. It is suggested to add an alias for your
+python for ease of use. 
 
 1. **Navigate to the project directory**:
    ```bash
-   cd /path/to/disease-analysis
+   cd <workspace>/nordpred-india-forecasts
    ```
 
 2. **Run the script**:
@@ -68,36 +73,71 @@ python3 reading-data/read_diabetes_data.py 18-groups-1991-2021-input-data/Global
 
 - The script automatically detects the CSV header format (multi-header or single-header) and extracts the year column accordingly.
 - Confidence intervals in the data are handled by extracting the first value from each cell.
+- Ensure that the age-groups match between what the script expects and what is in your csv file. To see what the script expects, visit `nordpred-india-forecasts/reading-data/read_diabetes_data.py` and check `age_map`.
 
+## Population file generation: Usage
 
-## Usage
+### Population Data Processing
 
-The main script `process-population.py` processes population data for a specific state and gender. It takes census data from 1991, 2001, and 2011, interpolates the data for years in between, and forecasts future population.
+The population processing script (`process-population.py`) processes census data and generates population predictions.
 
-### Input Data Format
+#### Required Files
+1. **Census Data Files**:
+   - `1991.csv`: 1991 census data
+   - `2001.csv`: 2001 census data
+   - `2011.csv`: 2011 census data
+   - These files should be in the input directory
+   - CSV format with columns: State, Age, Males, Females
 
-The input CSV files should be named `1991.csv`, `2001.csv`, and `2011.csv` and should have the following format:
-- A 'State' column containing state names
-- Columns for each age group with gender (e.g., '0-4 Male', '5-9 Male', etc.)
-
-### Running the Script
-
-Basic usage:
+#### Running the Script
 ```bash
-python3 process-population.py --state "State Name" --gender Male
+python NewPopulationScripts/process-population.py --state <state> --gender <gender> --input-dir <directory> --output-dir <directory>
 ```
 
-Full options:
+#### Running the Script
 ```bash
-python3 process-population.py \
-    --state "State Name" \
-    --gender Male \
-    --input-dir /path/to/input \
-    --output-dir /path/to/output \
-    --start-year 1991 \
-    --end-year 2021 \
-    --forecast-years 2025 2030 2035 2040
+python NewPopulationScripts/process-population.py --state <state> --gender <gender> --input-dir <directory> --output-dir <directory> [--start-year <year>] [--end-year <year>] [--forecast-years <years>]
 ```
+
+Options:
+- `--state`: State name (e.g., Goa)
+- `--gender`: Gender (Male/Female)
+- `--input-dir`: Directory containing census CSV files
+- `--output-dir`: Directory to save output files (default: "output")
+- `--start-year`: Start year for interpolation (default: 1990)
+- `--end-year`: End year for interpolation (default: 2021)
+- `--forecast-years`: Comma-separated list of years to forecast (default: "2025,2030,2035,2040")
+
+#### Output Files
+1. **Historical Population**: `population-{gender}-{state}.txt`
+   - Contains interpolated population data from 1991 to 2021
+   - Space-separated values
+   - Years as columns, age groups as rows
+   - Example: `population-male-goa.txt`
+
+2. **Predicted Population**: `population-{gender}-{state}-pred.txt`
+   - Contains population predictions for 2025-2040
+   - Space-separated values
+   - Years as columns, age groups as rows
+   - Example: `population-male-goa-pred.txt`
+
+3. **Visualization**: `population_forecast.png`
+   - Shows historical and predicted population trends
+   - Includes all age groups
+   - Historical data (solid lines) and predictions (dashed lines)
+
+#### Example
+```bash
+python NewPopulationScripts/process-population.py --state Goa --gender Male --input-dir NewPopulationScripts --output-dir output
+```
+
+This will:
+1. Read census data from `NewPopulationScripts/1991.csv`, `2001.csv`, and `2011.csv`
+2. Process data for Goa, male population
+3. Generate interpolated data (1991-2021)
+4. Create population predictions (2025-2040)
+5. Save output files in the `output` directory
+6. Create visualization of the population trends
 
 ### Output Files
 
@@ -115,10 +155,14 @@ To process male population data for Nagaland:
 python process-population.py3 --state "Nagaland" --gender Male --input-dir ../population-interpolation-forecast-scripts
 ```
 
-This will create:
-- `male-nagaland.txt`: Interpolated data from 1991-2021
-- `male-nagaland-pred.txt`: Forecast data for 2025-2040
-- Visualizations in the output directory
+This will:
+1. Read census data from `NewPopulationScripts/1991.csv`, `2001.csv`, and `2011.csv`
+2. Process data for {state}, {gender} population
+3. Generate interpolated data from 1995 to 2020
+4. Create population predictions for 2025-2045
+5. Save output files in the `output` directory
+6. Create visualization of the population trends
+
 
 ## Notes
 
@@ -126,6 +170,72 @@ This will create:
 - For forecasting, it uses cubic spline or linear interpolation
 - All population values are rounded to integers
 - Negative values are not allowed in the output 
+
+
+### Nordpred Analysis
+
+The nordpred analysis script (`run-nordpred-analysis.R`) performs age-standardized rate predictions using the nordpred package.
+
+#### Required Files
+1. **Cases file**: `{state}-t1_{gender}.txt`
+   - Contains incidence data
+   - Space-separated values
+   - Years as columns, age groups as rows
+   - Example: `goa-t1_male.txt`
+
+2. **Historical Population**: `population-{gender}-{state}.txt`
+   - Contains historical population data
+   - Space-separated values
+   - Years as columns, age groups as rows
+   - Example: `population-male-goa.txt`
+
+3. **Predicted Population**: `population-{gender}-{state}-pred.txt`
+   - Contains future population predictions
+   - Space-separated values
+   - Years as columns, age groups as rows
+   - Example: `population-male-goa-pred.txt`
+
+#### Running the Analysis
+```bash
+Rscript run-nordpred-analysis.R --input-dir <directory> --state <state> --gender <gender> --plot-type <type>
+```
+
+Options:
+- `--input-dir`: Directory containing input files (default: "test")
+- `--state`: State name (e.g., goa)
+- `--gender`: Gender (male/female)
+- `--plot-type`: Type of plot to generate
+  - `main`: Main prediction plot (default)
+  - `trends`: Trend scenarios plot
+  - `both`: Generate both plots
+
+#### Trend Scenarios
+The trends plot shows three different prediction scenarios:
+1. **No trend** (solid black line): Assumes no change in rates
+2. **Full trend** (dashed red line): Uses the full observed trend
+3. **Recent trend** (dotted blue line): Uses a weighted trend, giving more weight to recent years
+
+#### Output
+- `nordpred_plot_{state}_{gender}.png`: Main prediction plot
+- `nordpred_trends_{state}_{gender}.png`: Trend scenarios plot
+- `nordpred_predictions_{state}_{gender}.csv`: Predicted rates
+
+## Example
+
+To process the Nagaland data:
+```bash
+python3 reading_data/read_diabetes_data.py 18-groups-1991-2021-input-data/Nagaland-18groups-1991-2021.csv --output-base nagaland_type1
+```
+
+To process the Global data:
+```bash
+python3 NewScripts/read_diabetes_data.py 18-groups-1991-2021-input-data/GlobalType1-18groups-1991-2021.csv --output-base NewScripts/processed-files/global_processed
+```
+
+To run nordpred analysis for Goa:
+```bash
+Rscript run-nordpred-analysis.R --input-dir test --state goa --gender male --plot-type both
+```
 
 ## License
 

@@ -1,13 +1,3 @@
-#!/usr/bin/env python3
-"""
-Diabetes Data Processing Script
-
-This script processes diabetes data from CSV files and generates nordpred-style output files.
-
-License: Creative Commons Attribution 4.0 International License (CC BY 4.0)
-See LICENSE file for details.
-"""
-
 import pandas as pd
 import numpy as np
 import os
@@ -42,7 +32,7 @@ def process_file(input_csv, output_base):
     age_map = {
         '0-4': '<5 years',
         '5-9': '5-9 Years',
-        '10-14': '5-14 Years',
+        '10-14': '10-14 Years',
         '15-19': '15-19 years',
         '20-24': '20-24 Years',
         '25-29': '25-29 Years',
