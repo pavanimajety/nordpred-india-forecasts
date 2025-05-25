@@ -1,4 +1,23 @@
 #!/usr/bin/env Rscript
+# Nordpred:     R (www.r-project.org) & S-PLUS (www.insightful.com) functions 
+#               for prediction of cancer incidence (as used in the Nordpred project).
+# Written by:	Bjørn Møller and Harald Fekjaer <harald.fekjar@kreftregisteret.no>, 2000-2002
+# See also:	http://www.kreftregisteret.no/software/nordpred
+# Copyright (C) 2024
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 # Parse named arguments
 args <- commandArgs(trailingOnly = TRUE)
