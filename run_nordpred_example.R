@@ -9,19 +9,32 @@
 source("nordpred.s")
 
 # Reading data (Colon cancer for Norwegian males)
-indata <- read.table("original-data-nordpred/colon-men-Norway.txt", header=TRUE, sep=",", row.names=1)
-inpop1 <- read.table("original-data-nordpred/men-Norway.txt", header=TRUE, sep=",", row.names=1)
-inpop2 <- read.table("original-data-nordpred/men-Norway-pred.txt", header=TRUE, sep=",", row.names=1)
-
-# Include possible population predictions
+indata <- read.table("test/india-tye1_male.txt", header=TRUE, sep="", row.names=1)
+inpop1 <- read.table("test/male-india.txt", header=TRUE, sep=",", row.names=1)
+inpop2 <- read.table("test/male-india-pred.txt", header=TRUE, sep=",", row.names=1)
+# Print column names for debugging
+print("indata colnames:")
+print(colnames(indata))
+print("inpop1 colnames:")
+print(colnames(inpop1))
+# Remove the first column of indata to align with inpop1
+indata <- indata[, -1]
+# Combine historical and future population data
 inpop <- cbind(inpop1, inpop2)
+# Print dimensions for debugging
+print(paste("Number of columns in indata:", ncol(indata)))
+print(paste("Number of columns in inpop:", ncol(inpop)))
+
+# Calculate number of periods based on available data
+n_periods <- min(5, floor(ncol(inpop) / 5))  # Ensure we don't exceed 5 periods
+print(paste("Number of periods:", n_periods))
 
 # Run predictions:
-est <- nordpred.estimate(cases=indata, pyr=inpop, noperiod=4, startestage=5)
+est <- nordpred.estimate(cases=indata, pyr=inpop, noperiod=n_periods, startestage=5)
 res <- nordpred.prediction(est, startuseage=6, cuttrend=c(0, .25, .5, .75, .75), recent=TRUE)
 
 # This can also be done in one command:
-res <- nordpred(cases=indata, pyr=inpop, startestage=5, startuseage=6, noperiods=4, cuttrend=c(0, .25, .5, .75, .75))
+# res <- nordpred(cases=indata, pyr=inpop, startestage=5, startuseage=6, noperiods=n_periods, cuttrend=c(0, .25, .5, .75, .75))
 
 # The "nordpred"-function can also choose number periods to base predictions on:
   # This is done by listing candidate number of periods in "noperiods". 

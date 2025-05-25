@@ -56,12 +56,12 @@ pip install pandas numpy scipy matplotlib
 
 To process the Nagaland data:
 ```bash
-python reading-data/read_diabetes_data.py 18-groups-1991-2021-input-data/Nagaland-18groups-1991-2021.csv --output-base NewScripts/processed-files/nagaland_processed
+python3 reading-data/read_diabetes_data.py 18-groups-1991-2021-input-data/Nagaland-18groups-1991-2021.csv --output-base NewScripts/processed-files/nagaland_processed
 ```
 
 To process the Global data:
 ```bash
-python reading-data/read_diabetes_data.py 18-groups-1991-2021-input-data/GlobalType1-18groups-1991-2021.csv --output-base NewScripts/processed-files/global_processed
+python3 reading-data/read_diabetes_data.py 18-groups-1991-2021-input-data/GlobalType1-18groups-1991-2021.csv --output-base NewScripts/processed-files/global_processed
 ```
 
 ## Notes
@@ -84,12 +84,12 @@ The input CSV files should be named `1991.csv`, `2001.csv`, and `2011.csv` and s
 
 Basic usage:
 ```bash
-python process-population.py --state "State Name" --gender Male
+python3 process-population.py --state "State Name" --gender Male
 ```
 
 Full options:
 ```bash
-python process-population.py \
+python3 process-population.py \
     --state "State Name" \
     --gender Male \
     --input-dir /path/to/input \
@@ -112,7 +112,7 @@ The script generates the following output files in the specified output director
 
 To process male population data for Nagaland:
 ```bash
-python process-population.py --state "Nagaland" --gender Male --input-dir ../population-interpolation-forecast-scripts
+python process-population.py3 --state "Nagaland" --gender Male --input-dir ../population-interpolation-forecast-scripts
 ```
 
 This will create:
